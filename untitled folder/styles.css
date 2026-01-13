@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 1080px;
+    height: 1920px;
+    background: transparent;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+.overlay-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 20px solid #b794f6;
+}
+
+/* Top Section: Like Goal */
+.like-goal-section {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    right: 32px;
+    z-index: 10;
+}
+
+.like-goal-bar {
+    background: linear-gradient(135deg, rgba(88, 28, 135, 0.98) 0%, rgba(139, 69, 199, 0.95) 100%);
+    border: 4px solid #b794f6;
+    border-radius: 20px;
+    padding: 28px 36px;
+    box-shadow: 
+        0 0 30px rgba(183, 148, 246, 0.8),
+        0 0 60px rgba(183, 148, 246, 0.6),
+        0 0 90px rgba(183, 148, 246, 0.4),
+        inset 0 0 30px rgba(183, 148, 246, 0.3);
+    backdrop-filter: blur(6px);
+    animation: barPulse 4s ease-in-out infinite;
+}
+
+@keyframes barPulse {
+    0%, 100% {
+        box-shadow: 
+            0 0 30px rgba(183, 148, 246, 0.8),
+            0 0 60px rgba(183, 148, 246, 0.6),
+            0 0 90px rgba(183, 148, 246, 0.4),
+            inset 0 0 30px rgba(183, 148, 246, 0.3);
+    }
+    50% {
+        box-shadow: 
+            0 0 40px rgba(183, 148, 246, 1),
+            0 0 80px rgba(183, 148, 246, 0.8),
+            0 0 120px rgba(183, 148, 246, 0.6),
+            inset 0 0 40px rgba(183, 148, 246, 0.4);
+    }
+}
+
+.like-goal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.like-goal-label {
+    font-size: 48px;
+    font-weight: 900;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.like-goal-numbers {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-weight: 900;
+    line-height: 1;
+    justify-content: center;
+}
+
+.current-likes {
+    font-size: 72px;
+    color: #ffd700;
+    text-shadow: 
+        0 0 15px rgba(255, 215, 0, 1),
+        0 0 30px rgba(255, 215, 0, 0.8),
+        0 0 45px rgba(255, 215, 0, 0.6),
+        2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: goldPulse 2s ease-in-out infinite;
+}
+
+@keyframes goldPulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 15px rgba(255, 215, 0, 1),
+            0 0 30px rgba(255, 215, 0, 0.8),
+            0 0 45px rgba(255, 215, 0, 0.6),
+            2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px rgba(255, 215, 0, 1),
+            0 0 40px rgba(255, 215, 0, 0.9),
+            0 0 60px rgba(255, 215, 0, 0.7),
+            2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.separator {
+    font-size: 64px;
+    color: #ffd700;
+    font-weight: 900;
+    text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+.goal-likes {
+    font-size: 72px;
+    color: #ffd700;
+    text-shadow: 
+        0 0 15px rgba(255, 215, 0, 1),
+        0 0 30px rgba(255, 215, 0, 0.8),
+        0 0 45px rgba(255, 215, 0, 0.6),
+        2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: goldPulse 2s ease-in-out infinite;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 14px;
+    overflow: visible;
+    margin-top: 12px;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(183, 148, 246, 0.3);
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.pokeball-icon {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    z-index: 2;
+    transition: left 200ms ease;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.progress-bar {
+    height: 100%;
+    background: #ffd700;
+    border-radius: 14px;
+    width: 0%;
+    transition: width 200ms ease;
+    position: relative;
+}
+
+/* Middle Section: Two Video Areas with Logo Divider */
+.video-section {
+    position: absolute;
+    top: 200px;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+    z-index: 1;
+}
+
+.video-area {
+    flex: 1;
+    width: 100%;
+    background: transparent;
+    /* These areas are completely transparent for OBS video sources to show through */
+}
+
+.logo-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 10px 0;
+    width: 100%;
+    z-index: 5;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+.pokexclusive-logo {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    animation: logoFullRotation 4s ease-in-out infinite;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+@keyframes logoFullRotation {
+    0% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    75% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    100% {
+        transform: perspective(1000px) rotateY(360deg);
+    }
+}
+
+/* Bottom Section: Disclaimer */
+.disclaimer-section {
+    position: absolute;
+    bottom: 48px;
+    left: 32px;
+    right: 32px;
+    z-index: 10;
+}
+
+.disclaimer-banner {
+    background: rgba(88, 28, 135, 0.98);
+    border: 4px solid #b794f6;
+    border-radius: 16px;
+    padding: 32px 48px;
+    text-align: center;
+    font-size: 48px;
+    font-weight: 900;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    box-shadow: none;
+    backdrop-filter: blur(4px);
+    text-shadow: none;
+    line-height: 1.2;
+}

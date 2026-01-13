@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokexclusive Overlay Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #581c87 0%, #1a0a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .control-panel {
+            background: rgba(88, 28, 135, 0.9);
+            border: 3px solid #b794f6;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 
+                0 0 30px rgba(183, 148, 246, 0.6),
+                0 0 60px rgba(183, 148, 246, 0.4);
+        }
+
+        h1 {
+            margin-bottom: 8px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-title {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(255, 204, 2, 0.6));
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 32px;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 18px;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #b794f6;
+            border-radius: 8px;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #ffcc02;
+            box-shadow: 0 0 15px rgba(255, 204, 2, 0.4);
+        }
+
+        input[type="number"] {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .info-text {
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .status {
+            margin-top: 24px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .status.show {
+            opacity: 1;
+        }
+
+        .status.success {
+            color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="control-panel">
+        <h1>
+            <img src="image assets/Group 1.svg" alt="Pokexclusive" class="logo-title">
+        </h1>
+        <p class="subtitle">OBS Overlay Control Panel</p>
+
+        <form id="controlForm">
+            <div class="form-group">
+                <label for="label">Label</label>
+                <input type="text" id="label" name="label" value="LIKE GOAL" required>
+                <div class="info-text">Text displayed above the progress numbers</div>
+            </div>
+
+            <div class="form-group">
+                <label for="likes">Current Likes</label>
+                <input type="number" id="likes" name="likes" value="0" min="0" step="1" required>
+                <div class="info-text">Current number of likes (will be formatted automatically)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="goal">Goal</label>
+                <input type="number" id="goal" name="goal" value="1000000" min="1" step="1" required>
+                <div class="info-text">Target goal number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="rotationDuration">Logo Rotation Interval</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="number" id="rotationDuration" name="rotationDuration" value="4" min="2" max="20" step="0.5" required style="flex: 1;">
+                    <span style="font-size: 18px; font-weight: 700; color: #ffcc02;">seconds</span>
+                </div>
+                <div class="info-text">Time between rotation cycles (logo stays still for 75% of this time, then rotates)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="rotationSpeed">Logo Rotation Speed</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="number" id="rotationSpeed" name="rotationSpeed" value="1" min="0.5" max="5" step="0.1" required style="flex: 1;">
+                    <span style="font-size: 18px; font-weight: 700; color: #ffcc02;">seconds</span>
+                </div>
+                <div class="info-text">How fast the 360-degree rotation completes (lower = faster)</div>
+            </div>
+
+            <div class="status" id="status"></div>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = '/api/state';
+
+        // Load saved values from server
+        async function loadSavedValues() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch state');
+                const state = await response.json();
+
+                document.getElementById('label').value = state.label || 'LIKE GOAL';
+                document.getElementById('likes').value = state.likes || 0;
+                document.getElementById('goal').value = state.goal || 1000000;
+                document.getElementById('rotationDuration').value = state.rotationDuration || 4;
+                document.getElementById('rotationSpeed').value = state.rotationSpeed || 1;
+            } catch (error) {
+                console.error('Error loading state:', error);
+                // Use defaults if server is not available
+                document.getElementById('label').value = 'LIKE GOAL';
+                document.getElementById('likes').value = 0;
+                document.getElementById('goal').value = 1000000;
+                document.getElementById('rotationDuration').value = 4;
+                document.getElementById('rotationSpeed').value = 1;
+            }
+        }
+
+        // Save values to server
+        async function saveValues() {
+            const state = {
+                label: document.getElementById('label').value.trim(),
+                likes: parseInt(document.getElementById('likes').value, 10) || 0,
+                goal: parseInt(document.getElementById('goal').value, 10) || 1000000,
+                rotationDuration: parseFloat(document.getElementById('rotationDuration').value) || 4,
+                rotationSpeed: parseFloat(document.getElementById('rotationSpeed').value) || 1
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(state)
+                });
+
+                if (!response.ok) throw new Error('Failed to save state');
+                showStatus('Values saved! Overlay will update automatically.', 'success');
+            } catch (error) {
+                console.error('Error saving state:', error);
+                showStatus('Error saving values. Check console for details.', '');
+            }
+        }
+
+        // Show status message
+        function showStatus(message, type = '') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = 'status ' + type + ' show';
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 2000);
+        }
+
+        // Handle form input changes
+        const form = document.getElementById('controlForm');
+        const inputs = form.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                saveValues();
+            });
+
+            input.addEventListener('change', () => {
+                saveValues();
+            });
+        });
+
+        // Load saved values on page load
+        loadSavedValues();
+    </script>
+</body>
+</html>
