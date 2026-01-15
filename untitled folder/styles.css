@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+html {
+    margin: 0;
+    padding: 0;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: transparent;
+}
+
 body {
     width: 1080px;
     height: 1920px;
@@ -18,24 +27,137 @@ body {
     height: 100%;
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     border: 20px solid #b794f6;
 }
 
-/* Top Section: Like Goal */
-.like-goal-section {
+/* Left Section: Face Cam and Logo */
+.left-section {
     position: absolute;
-    top: 32px;
-    left: 32px;
-    right: 32px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.face-cam-area {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 640px;
+    height: 480px;
+    background: transparent;
+    border: 3px solid #b794f6;
+    border-radius: 20px;
+    box-shadow: 
+        0 0 30px rgba(183, 148, 246, 1),
+        0 0 60px rgba(183, 148, 246, 0.9),
+        0 0 90px rgba(183, 148, 246, 0.8),
+        0 0 120px rgba(183, 148, 246, 0.6),
+        0 0 150px rgba(183, 148, 246, 0.4),
+        inset 0 0 30px rgba(183, 148, 246, 0.4);
+    animation: neonPulse 3s ease-in-out infinite;
+    /* This area is transparent for OBS video sources to show through */
+}
+
+.face-cam-area::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1.5px solid #b794f6;
+    border-radius: 12px;
+    box-shadow: 
+        inset 0 0 15px rgba(183, 148, 246, 0.8),
+        inset 0 0 30px rgba(183, 148, 246, 0.5);
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 
+            0 0 30px rgba(183, 148, 246, 1),
+            0 0 60px rgba(183, 148, 246, 0.9),
+            0 0 90px rgba(183, 148, 246, 0.8),
+            0 0 120px rgba(183, 148, 246, 0.6),
+            0 0 150px rgba(183, 148, 246, 0.4),
+            inset 0 0 30px rgba(183, 148, 246, 0.4);
+    }
+    50% {
+        box-shadow: 
+            0 0 50px rgba(183, 148, 246, 1),
+            0 0 100px rgba(183, 148, 246, 1),
+            0 0 150px rgba(183, 148, 246, 0.9),
+            0 0 200px rgba(183, 148, 246, 0.7),
+            0 0 250px rgba(183, 148, 246, 0.5),
+            inset 0 0 50px rgba(183, 148, 246, 0.6);
+    }
+}
+
+.logo-container {
+    position: absolute;
+    top: 480px; /* 480px face cam height, center of logo will be at the bottom edge */
+    left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 640px;
+    z-index: 5;
+    filter: none !important;
+    box-shadow: none !important;
+    transform: translateY(-50%); /* Center the logo vertically on the bottom edge - half on face cam, half below */
+}
+
+.pokexclusive-logo {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    animation: logoFullRotation 4s ease-in-out infinite;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+@keyframes logoFullRotation {
+    0% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    75% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    100% {
+        transform: perspective(1000px) rotateY(360deg);
+    }
+}
+
+/* Right Section: Like Goal */
+.right-section {
+    position: absolute;
+    top: 0px; /* Align with face cam top */
+    left: 640px; /* 640px face cam width, directly next to it */
+    right: 0;
+    height: 480px; /* Match the height of the face cam area */
+    padding: 32px;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.like-goal-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .like-goal-bar {
     background: linear-gradient(135deg, rgba(88, 28, 135, 0.98) 0%, rgba(139, 69, 199, 0.95) 100%);
     border: 4px solid #b794f6;
     border-radius: 20px;
-    padding: 28px 36px;
+    padding: 20px 28px;
     box-shadow: 
         0 0 30px rgba(183, 148, 246, 0.8),
         0 0 60px rgba(183, 148, 246, 0.6),
@@ -43,6 +165,10 @@ body {
         inset 0 0 30px rgba(183, 148, 246, 0.3);
     backdrop-filter: blur(6px);
     animation: barPulse 4s ease-in-out infinite;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 @keyframes barPulse {
@@ -65,29 +191,51 @@ body {
 .like-goal-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    height: 100%;
+    gap: 12px;
 }
 
 .like-goal-label {
-    font-size: 48px;
+    font-size: 42px;
     font-weight: 900;
     color: #ffd700;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-align: center;
+    flex-shrink: 0; /* Keep label fixed at top */
 }
 
 .like-goal-numbers {
     display: flex;
-    align-items: baseline;
+    flex-direction: column;
+    align-items: center;
     gap: 12px;
     font-weight: 900;
     line-height: 1;
     justify-content: center;
+    flex: 1; /* Take up remaining space */
+}
+
+.current-likes-row,
+.goal-likes-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+}
+
+.current-likes-label,
+.goal-likes-label {
+    font-size: 25px;
+    color: #ffd700;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .current-likes {
-    font-size: 72px;
+    font-size: 38px;
     color: #ffd700;
     text-shadow: 
         0 0 15px rgba(255, 215, 0, 1),
@@ -115,17 +263,14 @@ body {
 }
 
 .separator {
-    font-size: 64px;
-    color: #ffd700;
-    font-weight: 900;
-    text-shadow: 
-        0 0 10px rgba(255, 215, 0, 0.8),
-        0 0 20px rgba(255, 215, 0, 0.6);
+    display: none; /* Hidden since we're stacking vertically */
 }
 
 .goal-likes {
-    font-size: 72px;
+    font-size: 48px;
     color: #ffd700;
+    display: block;
+    text-align: center;
     text-shadow: 
         0 0 15px rgba(255, 215, 0, 1),
         0 0 30px rgba(255, 215, 0, 0.8),
@@ -140,13 +285,13 @@ body {
     background: rgba(0, 0, 0, 0.5);
     border-radius: 14px;
     overflow: visible;
-    margin-top: 12px;
     box-shadow: 
         inset 0 2px 4px rgba(0, 0, 0, 0.4),
         0 0 15px rgba(183, 148, 246, 0.3);
     position: relative;
     display: flex;
     align-items: center;
+    flex-shrink: 0; /* Keep progress bar fixed at bottom */
 }
 
 .pokeball-icon {
@@ -168,63 +313,6 @@ body {
     position: relative;
 }
 
-/* Middle Section: Two Video Areas with Logo Divider */
-.video-section {
-    position: absolute;
-    top: 200px;
-    bottom: 120px;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 0;
-    z-index: 1;
-}
-
-.video-area {
-    flex: 1;
-    width: 100%;
-    background: transparent;
-    /* These areas are completely transparent for OBS video sources to show through */
-}
-
-.logo-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 10px 0;
-    width: 100%;
-    z-index: 5;
-    filter: none !important;
-    box-shadow: none !important;
-}
-
-.pokexclusive-logo {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    animation: logoFullRotation 4s ease-in-out infinite;
-    transform-style: preserve-3d;
-    transform-origin: center;
-    filter: none !important;
-    box-shadow: none !important;
-}
-
-@keyframes logoFullRotation {
-    0% {
-        transform: perspective(1000px) rotateY(0deg);
-    }
-    75% {
-        transform: perspective(1000px) rotateY(0deg);
-    }
-    100% {
-        transform: perspective(1000px) rotateY(360deg);
-    }
-}
 
 /* Bottom Section: Disclaimer */
 .disclaimer-section {
